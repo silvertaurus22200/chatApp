@@ -7,7 +7,7 @@ const signup = async (req, res) => {
 
     try {
         if (password !== confirmPassword) {
-            return res.status(400).json({ erro: "passwords do not match" })
+            return res.status(400).json({ error: "passwords do not match" })
         }
 
         const user = await User.findOne({ email });
@@ -24,8 +24,8 @@ const signup = async (req, res) => {
         });
 
         await newUser.save();
-        res.status(201).json({ message: "User created successfully" })
-        console.log(res);
+        console.log(newUser);
+        res.status(201).json({ message: "User created successfully" , user : newUser })
 
     } catch (error) {
         res.status(500).json({ error: "internal server error" });
@@ -41,11 +41,11 @@ const login = async (req, res) => {
     try {
         const user = await User.findOne({email});
         if(!user){
-           return res.status(400).json({message: "user does not exist"});
+           return res.status(400).json({error: "user does not exist"});
         }
         const isMatched = await bcryptjs.compare(password, user.password)
         if(!isMatched){
-            return res.status(400).json({message: "invalid password"});
+            return res.status(400).json({error: "invalid password"});
         }
         createTokenAndSaveCookie(user._id, res);
         res.status(200).json({message: "user successfully logged in", user: {
@@ -75,4 +75,20 @@ const logout = (req, res) => {
     }
 }
 
-export default { signup, login , logout};
+
+
+const getAllUsers = async (req,res) => {
+
+    try {
+        const loggedinUser = req.user._id;
+        const filterdUsers = await User.find({_id : { $ne : loggedinUser }}).select("-password");
+        res.status(200).json(filterdUsers)
+
+    } catch (error) {
+        res.status(500).json({errors: "internal server error"})
+    }
+
+}
+
+
+export default { signup, login , logout,  getAllUsers};

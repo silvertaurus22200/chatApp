@@ -8,7 +8,7 @@ function Search() {
                     <label className="flex items-center gap-2 w-[80%]">
                         <input type="text" className="grow p-2 rounded-xl outline-none  " placeholder="Search" />
                     </label>
-                    <button className="text-2xl hover:bg-slate-700 rounded-full p-2 duration-300">
+                    <button className="text-2xl hover:bg-slate-500 rounded-full p-2 duration-300 text-gray-400">
                         <FaSearch />
                     </button>
                 </div>
